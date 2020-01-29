@@ -58,13 +58,18 @@ public class SignUp extends AppCompatActivity {
     public void checkEmail(View view){
         String emailAdd1 = email.getText().toString();
         String emailConfirm1 = confirm_email.getText().toString();
+        String password = pass.getText().toString();
 
 
-        if(emailAdd1.equals(emailConfirm1)){
+        if(!emailAdd1.equals(emailConfirm1)){
+            Toast.makeText(this, "The emails do not match ", Toast.LENGTH_SHORT).show();
+        }if(password.length() < 8){
+            Toast.makeText(this, "This password is less than 8 characters", Toast.LENGTH_SHORT).show();
+        }
+        else{
+//            Toast.makeText(this, "The emails do not match ", Toast.LENGTH_SHORT).show();
             sendData();
             onClickHandlerSignUp();
-        }else{
-            Toast.makeText(this, "The emails do not match ", Toast.LENGTH_SHORT).show();
 
         }
     }
