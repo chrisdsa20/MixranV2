@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Mishranv3</string>
+    <string name="logo">MISHRAN</string>
+    <string name="login">Login</string>
+    <string name="or">OR</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="title_activity_login">Login</string>
+    <string name="email">Email</string>
+    <string name="confirm_email">Confirm Email</string>
+    <string name="dob">Date of Birth</string>
+    <string name="forgotten_info">Forgot Username or Password</string>
+    <string name="confrim">Confrim</string>
+    <string name="party">Party</string>
+    <string name="mates">Mates</string>
+    <string name="solo">Solo</string>
+    <string name="favourite_genre_1">Favourite Genre #1</string>
+    <string name="favourite_genre_2">Favourite Genre #2</string>
+    <string name="favourite_genre_3">Favourite Genre #3</string>
+</resources>
