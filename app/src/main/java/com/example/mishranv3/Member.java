@@ -4,20 +4,19 @@ public class Member {
 
     String username;
     String password;
-    String confirmEmail;
     String email;
-    String id;
+//    String id;
 
     public void Data(){
 
     }
 
-    public Member(String username, String password, String confirmEmail, String email, String id) {
+    public Member(String username, String password, String email) {
         this.username = username;
         this.password = password;
-        this.confirmEmail = confirmEmail;
+
         this.email = email;
-        this.id = id;
+//        this.id = id;
     }
 
     public String getUsername() {
@@ -28,15 +27,11 @@ public class Member {
         return password;
     }
 
-    public String getConfirmEmail() {
-        return confirmEmail;
-    }
-
     public String getEmail() {
         return email;
     }
 
-    public String getId() {
-        return id;
-    }
+//    public String getId() {
+//        return id;
+//    }
 }

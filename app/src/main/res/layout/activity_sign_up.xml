@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".SignUp">
 
     <EditText
@@ -13,11 +14,13 @@
         android:ems="10"
         android:inputType="textEmailAddress"
         android:hint="@string/confirm_email"
+        android:textColor="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.571"
+
         android:importantForAutofill="no" />
 
     <EditText
@@ -27,6 +30,7 @@
         android:ems="10"
         android:hint="@string/username"
         android:inputType="textPersonName"
+        android:textColor="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,6 +45,7 @@
         android:ems="10"
         android:inputType="textPassword"
         android:hint="@string/password"
+        android:textColor="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,6 +60,7 @@
         android:ems="10"
         android:inputType="textEmailAddress"
         android:hint="@string/email"
+        android:textColor="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,6 +74,7 @@
         android:layout_height="wrap_content"
         android:text="@string/logo"
         android:textSize="36sp"
+        android:textColor="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +85,8 @@
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="checkEmail"
+        android:background="#e9d362"
+        android:onClick="onClickHandler"
         android:text="@string/confrim"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

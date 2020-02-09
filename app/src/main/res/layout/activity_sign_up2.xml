@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".SignUp2">
 
     <TextView
@@ -37,28 +38,28 @@
         android:text="@string/favourite_genre_1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.526" />
+        app:layout_constraintVertical_bias="0.403" />
 
     <TextView
-        android:id="@+id/favGenre3"
+        android:id="@+id/favGenre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/favourite_genre_1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.403" />
+        app:layout_constraintVertical_bias="0.526" />
 
     <EditText
         android:id="@+id/favGenreinput1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Genre #1"
+        android:hint="@string/genre_1"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -72,7 +73,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Genre #3"
+        android:hint="@string/genre_3"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -86,7 +87,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Genre #2"
+        android:hint="@string/genre_2"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -99,6 +100,7 @@
         android:id="@+id/genreBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="onClickHandler"
         android:text="@string/confrim"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
