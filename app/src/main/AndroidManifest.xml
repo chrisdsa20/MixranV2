@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.mishranv3">
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,7 +9,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Party"></activity>
+        <activity android:name=".MatesCreateSession">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="example.com"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".PartyCreate" />
+        <activity android:name=".PartyJoin" />
+        <activity android:name=".MatesJoinSession" />
+        <activity android:name=".MateHome" />
+        <activity android:name=".Mates" />
+        <activity android:name=".Solo" />
+        <activity android:name=".userProfile" />
+        <activity android:name=".Party" />
         <activity android:name=".SignUp2" />
         <activity android:name=".SplashScreen">
             <intent-filter>

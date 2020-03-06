@@ -30,7 +30,11 @@ public class MainActivity extends AppCompatActivity {
         pass = findViewById(R.id.passid);
 
         mAuth = FirebaseAuth.getInstance();
+
+
     }
+
+    private static final String TAG = "MainActivity";
 
     public void loginActivity(View view){
         signIn();
@@ -40,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         //Creating the event handler to navigate to Sign Up page
         Intent myIntent = new Intent(MainActivity.this, SignUp.class);
         startActivity(myIntent);
-
     }
 
     private void onClickHandler(){
@@ -56,21 +59,21 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                                onClickHandler();
-                        }if (emailadd.isEmpty()){
+                            Log.i(TAG, "onComplete:" + emailadd);
+                            Toast.makeText(MainActivity.this, "Loading", Toast.LENGTH_SHORT).show();
+                            onClickHandler();
+                        }
+                        if (emailadd.isEmpty()) {
                             Toast.makeText(MainActivity.this, "Please Enter you Email", Toast.LENGTH_SHORT).show();
-                        }if (password.isEmpty()) {
+                        }
+                        if (password.isEmpty()) {
                             Toast.makeText(MainActivity.this, "Please Enter your Password", Toast.LENGTH_SHORT).show();
                         }
                         else {
                             // If sign in fails, display a message to the user.
                             String message = task.getException().getMessage();
-                            Toast.makeText(MainActivity.this, message,
-                                    Toast.LENGTH_SHORT).show();
-//                            updateUI(null);
+                            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
                         }
-
-                        // ...
                     }
                 });
     }

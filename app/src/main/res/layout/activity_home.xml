@@ -37,6 +37,7 @@
         android:id="@+id/button5"
         android:layout_width="129dp"
         android:layout_height="74dp"
+        android:onClick="onClickMates"
         android:text="@string/mates"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,10 +49,22 @@
         android:id="@+id/button6"
         android:layout_width="129dp"
         android:layout_height="74dp"
+        android:onClick="onClickSolo"
         android:text="@string/solo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.704" />
+
+    <TextView
+        android:id="@+id/userWelcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/textview"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.213" />
 </androidx.constraintlayout.widget.ConstraintLayout>

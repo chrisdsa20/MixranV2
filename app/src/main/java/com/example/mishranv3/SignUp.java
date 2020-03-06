@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -20,14 +21,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
-public class SignUp<DatabaseReff> extends AppCompatActivity {
+public class SignUp extends AppCompatActivity {
 
     EditText username, pass, email, confirm_email;
     FirebaseAuth mAuth;
-    FirebaseDatabase db = FirebaseDatabase.getInstance();
+    FirebaseDatabase db;
 
 
     DatabaseReference DatabaseReff;
+
+    private static final String TAG = "SignUp";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,23 +46,22 @@ public class SignUp<DatabaseReff> extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         DatabaseReff = db.getInstance().getReference("Member");
 
-
-
     }
 
-    //    @Override
-//    public void onStart() {
-//        super.onStart();
-//        // Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser mAuthCurrentUser = mAuth.getCurrentUser();
-//        if(mAuthCurrentUser != null){
-//            newPage();
-//        }
-//    }
+        @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser mAuthCurrentUser = mAuth.getCurrentUser();
+        if(mAuthCurrentUser != null){
+            newPage();
+        }
+    }
 
     public void onClickHandler(View view){
         createAccount();
     }
+
 
     private void createAccount() {
         String emailadd = email.getText().toString();

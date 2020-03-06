@@ -21,4 +21,18 @@
     <string name="genre_1">Genre #1</string>
     <string name="genre_3">Genre #3</string>
     <string name="genre_2">Genre #2</string>
+    <string name="welcome">Welcome</string>
+    <string name="todo">TODO</string>
+    <string name="invitation_deep_link" />
+    <string name="session_code">Session Code</string>
+    <string name="text_view">Text View</string>
+    <string name="song">Song</string>
+    <string name="duration">Duration</string>
+    <string name="artist">Artist</string>
+    <string name="rating">Rating</string>
+    <string name="textview">TextView</string>
+    <string name="join_a_session">Join a Session</string>
+    <string name="create_a_session">Create a Session</string>
+    <string name="partyid">PartyID</string>
+    <string name="session_name">Session Name</string>
 </resources>

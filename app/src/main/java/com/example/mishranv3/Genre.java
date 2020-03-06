@@ -2,10 +2,9 @@ package com.example.mishranv3;
 
 public class Genre {
 
-    private String FavGenre1;
-    private String FavGenre2;
-    private String FavGenre3;
-    private String username;
+    String FavGenre1;
+    String FavGenre2;
+    String FavGenre3;
 
     public String getFavGenre1() {
         return FavGenre1;
