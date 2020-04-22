@@ -6,4 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".PartyJoin">
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/partyJoin_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:itemIconTint="@drawable/selector"
+        app:itemTextColor="@drawable/selector"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:menu="@menu/menu_nav"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,17 +1,13 @@
 package com.example.mishranv3;
 
-import android.content.Context;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
+import android.renderscript.Sampler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,25 +19,44 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 
+class SearchAdapter extends FirebaseRecyclerAdapter<Music, SearchAdapter.SearchViewHolder> {
 
-public class MusicAdapter extends FirebaseRecyclerAdapter<Music, MusicAdapter.MusicViewHolder> {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String currentUser = mAuth.getCurrentUser().getUid();
-    DatabaseReference db = FirebaseDatabase.getInstance().getReference("UserMusic");
+    DatabaseReference userdb = FirebaseDatabase.getInstance().getReference("MatesSession").child(currentUser);
+    DatabaseReference db;
 
-    private static final String TAG="MusicAdapter";
-
-    public MusicAdapter(@NonNull FirebaseRecyclerOptions<Music> options) {
+    private static final String TAG="SearchAdapter";
+    public SearchAdapter(@NonNull FirebaseRecyclerOptions<Music> options) {
         super(options);
+
+        userdb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    String value = dataSnapshot.child("id").getValue().toString();
+                    Log.i(TAG, "onDataChange: "+ value);
+                    db= FirebaseDatabase.getInstance().getReference("MatesSessionID").child(value);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull MusicViewHolder holder, int position, @NonNull final Music model) {
+    protected void onBindViewHolder(@NonNull SearchViewHolder holder, int position, @NonNull final Music model) {
         final MediaPlayer mediaPlayer = new MediaPlayer();
         holder.Name.setText(model.getName());
         holder.Artist.setText(model.getArtist());
@@ -85,15 +100,18 @@ public class MusicAdapter extends FirebaseRecyclerAdapter<Music, MusicAdapter.Mu
         holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = model.getName();
-                String artist = model.getArtist();
-                String duration = model.getDuration();
-                String song = model.getSong();
-                String genre = model.getGenre();
+                    String name = model.getName();
+                    String artist = model.getArtist();
+                    String duration = model.getDuration();
+                    String song = model.getSong();
+                    String genre = model.getGenre();
 
-                Music music = new Music(artist,duration,genre,name,song);
-                db.child(currentUser).child(name).setValue(music);
-                Toast.makeText(v.getContext(), "Song added to playlist", Toast.LENGTH_SHORT).show();
+                    Music music = new Music(artist,duration,genre,name,song);
+                    db.child(name).setValue(music);
+                    Toast.makeText(v.getContext(), "Song added to playlist", Toast.LENGTH_SHORT).show();
+
+
+
             }
         });
 
@@ -102,21 +120,19 @@ public class MusicAdapter extends FirebaseRecyclerAdapter<Music, MusicAdapter.Mu
 
     @NonNull
     @Override
-    public MusicViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.playlist_layout, parent,false);
-        return new MusicViewHolder(view);
+        return new SearchAdapter.SearchViewHolder(view);
     }
 
-    class MusicViewHolder extends RecyclerView.ViewHolder{
+    public class SearchViewHolder extends RecyclerView.ViewHolder {
 
         TextView Name,Artist,Duration;
         ConstraintLayout constraintLayout;
         ImageView playButton, pauseButton, add;
-
-
-        public MusicViewHolder(@NonNull View itemView) {
-
+        public SearchViewHolder(@NonNull View itemView) {
             super(itemView);
+
             Name = itemView.findViewById(R.id.songName);
             Artist = itemView.findViewById(R.id.artistName);
             Duration = itemView.findViewById(R.id.duration);
@@ -124,9 +140,6 @@ public class MusicAdapter extends FirebaseRecyclerAdapter<Music, MusicAdapter.Mu
             playButton = itemView.findViewById(R.id.play);
             pauseButton = itemView.findViewById(R.id.pause);
             add = itemView.findViewById(R.id.add);
-
-
-
         }
     }
 }

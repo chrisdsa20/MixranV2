@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +16,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
 
 public class Home extends AppCompatActivity {
 
@@ -32,19 +35,23 @@ public class Home extends AppCompatActivity {
         userID = findViewById(R.id.userWelcome);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser().getUid();
-        db = FirebaseDatabase.getInstance().getReference().child("Member").child(currentUser);
-        Toast.makeText(this, currentUser, Toast.LENGTH_SHORT).show();
+        db = FirebaseDatabase.getInstance().getReference().child("Member");
+
 
         db.addValueEventListener(new ValueEventListener() {
+            private String TAG = "Home";
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
-                    String username = dataSnapshot.child("username").getValue().toString();
+                   String username;
+                   username = dataSnapshot.child(currentUser).child("username").getValue().toString();
 
-                    userID.setText("Welcome"+ username);
+                    userID.setText("Welcome " + username);
+                    Log.i(TAG, username);
                 }else
                 {
-                    userID.setText("Welcome");
+                    userID.setText(R.string.welcome);
                 }
             }
 

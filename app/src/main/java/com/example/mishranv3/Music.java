@@ -19,6 +19,19 @@ public class Music {
                 '}';
     }
 
+    public Music(String artist, String duration, String genre, String name, String song) {
+        Artist = artist;
+        Duration = duration;
+        Genre = genre;
+        Name = name;
+        Song = song;
+    }
+
+
+    public Music() {
+
+    }
+
     public String getArtist() {
         return Artist;
     }
@@ -58,11 +71,4 @@ public class Music {
     public void setSong(String song) {
         Song = song;
     }
-
-
-    public Music(){
-
-    }
-
-
 }

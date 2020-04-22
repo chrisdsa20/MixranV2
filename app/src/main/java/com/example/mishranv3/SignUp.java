@@ -48,15 +48,6 @@ public class SignUp extends AppCompatActivity {
 
     }
 
-        @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser mAuthCurrentUser = mAuth.getCurrentUser();
-        if(mAuthCurrentUser != null){
-            newPage();
-        }
-    }
 
     public void onClickHandler(View view){
         createAccount();
@@ -68,12 +59,15 @@ public class SignUp extends AppCompatActivity {
         String emailconfirm = confirm_email.getText().toString();
         String password = pass.getText().toString();
 
+        //Check if the user has added the correct email in the email address field and in the confirm email fields
         if (!emailadd.equals(emailconfirm)) {
             Toast.makeText(this, "The emails do not match ", Toast.LENGTH_SHORT).show();
         }
+        //The password that the user creates must have at least 8 characters
         if (password.length() < 8) {
             Toast.makeText(this, "This password is less than 8 characters", Toast.LENGTH_SHORT).show();
         }
+        //Creates the user using the email and password in Firebase Authentication
         else {
             mAuth.createUserWithEmailAndPassword(emailadd, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -88,23 +82,19 @@ public class SignUp extends AppCompatActivity {
                                 Toast.makeText(SignUp.this, message, Toast.LENGTH_SHORT).show();
 
                             }
-
-
                         }
                     });
-
         }
 
 
     }
-
+//The Data is sent to the Firebase Database
     private void sendUser(){
         String currentUser = mAuth.getCurrentUser().getUid();
         String userID = username.getText().toString();
-        String password = pass.getText().toString();
         String emailID = email.getText().toString();
 
-        Member member = new Member(userID,password,emailID);
+        Member member = new Member(userID,emailID);
 
         DatabaseReff.child(currentUser).setValue(member);
 
@@ -112,7 +102,7 @@ public class SignUp extends AppCompatActivity {
 
 
     }
-
+//Takes the user to the next page
     private void newPage() {
         Intent newPage = new Intent(this, SignUp2.class);
         startActivity(newPage);

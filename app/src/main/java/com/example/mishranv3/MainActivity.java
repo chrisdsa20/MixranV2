@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -15,11 +16,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
     EditText email, pass;
     FirebaseAuth mAuth;
+    DatabaseReference db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +31,21 @@ public class MainActivity extends AppCompatActivity {
 
         email = findViewById(R.id.emailid);
         pass = findViewById(R.id.passid);
-
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseDatabase.getInstance().getReference();
 
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser mAuthCurrentUser = mAuth.getCurrentUser();
+        if(mAuthCurrentUser != null){
+            Intent myIntent = new Intent(this, Home.class);
+            startActivity(myIntent);
+            finish();
+        }
     }
 
     private static final String TAG = "MainActivity";
@@ -63,15 +77,10 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this, "Loading", Toast.LENGTH_SHORT).show();
                             onClickHandler();
                         }
-                        if (emailadd.isEmpty()) {
-                            Toast.makeText(MainActivity.this, "Please Enter you Email", Toast.LENGTH_SHORT).show();
-                        }
-                        if (password.isEmpty()) {
-                            Toast.makeText(MainActivity.this, "Please Enter your Password", Toast.LENGTH_SHORT).show();
-                        }
-                        else {
+                        else{
                             // If sign in fails, display a message to the user.
                             String message = task.getException().getMessage();
+                            Log.i(TAG, "onComplete: Login Successful");
                             Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
                         }
                     }

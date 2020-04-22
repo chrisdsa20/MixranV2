@@ -31,7 +31,7 @@ public class SignUp2 extends AppCompatActivity {
         DatabaseReff = db.getInstance().getReference("Genre");
         mAuth = FirebaseAuth.getInstance();
     }
-
+//Saves the users Favourite Genre
     public void sendGenre(){
         //The data is stored using the users unique ID from the Authentication section
         String currentUser = mAuth.getCurrentUser().getUid();

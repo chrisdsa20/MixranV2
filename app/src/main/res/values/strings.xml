@@ -35,4 +35,12 @@
     <string name="create_a_session">Create a Session</string>
     <string name="partyid">PartyID</string>
     <string name="session_name">Session Name</string>
+    <string name="sessioncode">[SessionCode]</string>
+    <string name="submit">submit</string>
+    <string name="code">Code</string>
+    <string name="playbutton">PlayButton</string>
+    <string name="session">Session</string>
+    <string name="edit_code">Edit Code</string>
+    <string name="hint">hint</string>
+
 </resources>
