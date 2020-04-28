@@ -8,22 +8,39 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 public class MateHome extends AppCompatActivity {
 
-    RecyclerView recyclerView;
+    DatabaseReference db;
+    FirebaseAuth mAuth;
+    String currentUser;
+    ImageView shareButton;
     BottomNavigationView bottomNavigationView;
+    TextView code;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mate_home);
-        recyclerView = findViewById(R.id.matesRecycler);
+        shareButton = findViewById(R.id.imageView21);
+        code = findViewById(R.id.latestMatesCode);
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser().getUid();
+        db = FirebaseDatabase.getInstance().getReference();
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
-        recyclerView.setLayoutManager(gridLayoutManager);
         bottomNavigationView = findViewById(R.id.bottom_nav);
 
         bottomNavigationView.setSelectedItemId(R.id.mates);
@@ -55,6 +72,28 @@ public class MateHome extends AppCompatActivity {
                 return false;
             }
         });
+
+        db.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists()){
+                    code.setVisibility(View.INVISIBLE);
+                    shareButton.setVisibility(View.INVISIBLE);
+                }else{
+                    String value = dataSnapshot.child("MatesSession").child(currentUser).child("id")
+                            .getValue().toString();
+                    code.setText(value);
+
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void JoinSession(View view){
@@ -64,6 +103,20 @@ public class MateHome extends AppCompatActivity {
 
     public void CreateSession(View view){
         Intent myIntent = new Intent(this,MatesCreateSession.class);
+        startActivity(myIntent);
+    }
+
+    public void shareHandler(View view){
+        String sessionCode = code.getText().toString();
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, sessionCode);
+        startActivity(shareIntent.createChooser(shareIntent,"Share"));
+    }
+
+    public void goToSession(View view){
+        Intent myIntent = new Intent(this,CreateSessionHome.class);
         startActivity(myIntent);
     }
 }

@@ -64,16 +64,49 @@
         app:layout_constraintVertical_bias="1.0"
         app:menu="@menu/menu_nav"/>
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/matesRecycler"
-        android:layout_width="357dp"
-        android:layout_height="182dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Latest Mates Session"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499" />
+        app:layout_constraintTop_toBottomOf="@+id/textView8"
+        app:layout_constraintVertical_bias="0.282" />
+
+    <TextView
+        android:id="@+id/latestMatesCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="goToSession"
+        android:text="@string/code"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.132"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button7"
+        app:layout_constraintVertical_bias="0.301" />
+
+    <ImageView
+        android:id="@+id/imageView21"
+        android:layout_width="39dp"
+        android:layout_height="41dp"
+        android:clickable="true"
+        android:onClick="shareHandler"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.895"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView18"
+        app:layout_constraintVertical_bias="0.141"
+        app:srcCompat="@drawable/share"
+        android:contentDescription="TODO" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

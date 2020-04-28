@@ -32,10 +32,9 @@ public class MatesJoinSession extends AppCompatActivity {
 
     private static final String TAG="MatesJoinSession";
     EditText input;
-    ImageView add;
     Button submit;
-    SoloMusicAdapter adapter;
-    DatabaseReference db, db2, databaseReference;
+    MatesMusicAdapter adapter;
+    DatabaseReference db, db2, database, newdb;
     BottomNavigationView bottomNavigationView;
     FirebaseAuth mAuth;
     String currentUser;
@@ -51,70 +50,40 @@ public class MatesJoinSession extends AppCompatActivity {
         submit = findViewById(R.id.submitCode);
         db = FirebaseDatabase.getInstance().getReference("MatesSession");
         db2 = FirebaseDatabase.getInstance().getReference().child("MatesSessionID");
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("MatesSessionID").child(code);
+        newdb = FirebaseDatabase.getInstance().getReference().child("Music");
         mAuth = FirebaseAuth.getInstance();
-        recyclerView = findViewById(R.id.matesJoinRecycler);
         currentUser = mAuth.getCurrentUser().getUid();
         bottomNavigationView = findViewById(R.id.joinSession_nav);
-
-
-        bottomNavigationView.setSelectedItemId(R.id.mates);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch(item.getItemId()){
-                    case R.id.search:
-                        startActivity(new Intent(getApplicationContext(), Search.class));
-                        overridePendingTransition(0,0);
-                        return true;
-                    case R.id.party:
-                        startActivity(new Intent(getApplicationContext(), Party.class));
-                        overridePendingTransition(0,0);
-                        return true;
-                    case R.id.solo:
-                        startActivity(new Intent(getApplicationContext(), Solo.class));
-                        overridePendingTransition(0,0);
-                        return true;
-                    case R.id.mates:
-                        return true;
-                    case R.id.profile:
-                        startActivity(new Intent(getApplicationContext(), userProfile.class));
-                        overridePendingTransition(0,0);
-                        return true;
-
-                }
-
-                return false;
-            }
-        });
-
-        FirebaseRecyclerOptions<Music> options =
-                new FirebaseRecyclerOptions.Builder<Music>()
-                        .setQuery(databaseReference, Music.class)
-                        .build();
-
-        adapter = new SoloMusicAdapter(options);
-        recyclerView.setAdapter(adapter);
+        recyclerView = findViewById(R.id.joinAdapter);
 
     }
-
-    public void onClickHandler(View view){
+    public void onClickHandler(final View view){
         final String code = input.getText().toString();
 
-        db.orderByChild("id").equalTo(code).addValueEventListener(new ValueEventListener() {
+        db2.orderByChild("id").equalTo(code).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
+                    //Inform user that the data has been
                     Toast.makeText(MatesJoinSession.this, "Data Found", Toast.LENGTH_SHORT).show();
                     String currentUser = mAuth.getCurrentUser().getUid();
+                    MatesSessions matesSessions = new MatesSessions(code);
+                    db.child(currentUser).setValue(matesSessions);
+                    newSearch();
 
-                    MatesSessions matesSessions = new MatesSessions(currentUser,code);
-                    db2.child(currentUser).setValue(matesSessions);
+
+
+
+
                 }
                 else{
                     Toast.makeText(MatesJoinSession.this, "Error", Toast.LENGTH_SHORT).show();
                 }
             }
+
+
+
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -122,12 +91,14 @@ public class MatesJoinSession extends AppCompatActivity {
             }
         });
 
-
     }
 
     public void searchHandler(View view){
         Intent searchIntent = new Intent(this, solo_search.class);
         startActivity(searchIntent);
     }
-
+    private void newSearch(){
+        Intent myIntent = new Intent(this, CreateSessionHome.class);
+        startActivity(myIntent);
+    }
 }

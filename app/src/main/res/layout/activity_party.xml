@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Create a Party"
+        android:onClick="onClick"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.908"
@@ -32,6 +33,20 @@
         app:layout_constraintVertical_bias="1.0"
         app:menu="@menu/menu_nav"/>
 
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="39dp"
+        android:layout_height="41dp"
+        android:clickable="true"
+        android:onClick="shareHandler"
+        app:layout_constraintBottom_toTopOf="@+id/party_nav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.87"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button11"
+        app:layout_constraintVertical_bias="0.315"
+        app:srcCompat="@drawable/share" />
+
     <Button
         android:id="@+id/button10"
         android:layout_width="wrap_content"
@@ -43,16 +58,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.24" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/partyView"
-        android:layout_width="275dp"
-        android:layout_height="158dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.591" />
 
     <TextView
         android:id="@+id/textView13"
@@ -68,19 +73,30 @@
         app:layout_constraintVertical_bias="0.109" />
 
     <TextView
+        android:id="@+id/latestPartyCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="goToSession"
+        android:text="@string/code"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/party_nav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.132"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button10"
+        app:layout_constraintVertical_bias="0.301" />
+
+    <TextView
         android:id="@+id/textView14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="180dp"
-        android:layout_marginLeft="180dp"
-        android:layout_marginTop="176dp"
-        android:layout_marginEnd="172dp"
-        android:layout_marginRight="172dp"
-        android:layout_marginBottom="21dp"
+        android:layout_marginTop="144dp"
         android:text="Previous Parties"
-        app:layout_constraintBottom_toTopOf="@+id/partyView"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.59"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView13"
         app:layout_constraintVertical_bias="0.0" />

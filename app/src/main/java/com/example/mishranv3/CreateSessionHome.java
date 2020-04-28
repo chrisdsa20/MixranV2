@@ -8,11 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,17 +21,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-
 public class CreateSessionHome extends AppCompatActivity {
 
-    DatabaseReference matesdb, musicdb, matesdb2;
+
+    DatabaseReference userdb, userCode;
     FirebaseAuth mAuth;
     ImageView shareButton;
     String currentUser;
-    EditText sessionCode, sessionName;
+    TextView sessionCode;
     RecyclerView recyclerView;
-    MusicAdapter adapter;
+    MatesMusicAdapter adapter;
+    String text;
+    private Object FirebaseRecyclerOptions;
 
 
     @Override
@@ -41,27 +41,18 @@ public class CreateSessionHome extends AppCompatActivity {
         setContentView(R.layout.activity_create_session_home);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser().getUid();
-        matesdb = FirebaseDatabase.getInstance().getReference().child("MatesSessionID");
-        musicdb = FirebaseDatabase.getInstance().getReference().child("Music");
-        matesdb2 = FirebaseDatabase.getInstance().getReference().child("MatesSession").child(currentUser);
+        userdb = FirebaseDatabase.getInstance().getReference("MatesSession").child(currentUser);
+        text = userdb.toString();
+        Log.i(TAG, "onCreate: "+ userCode);
         shareButton = findViewById(R.id.shareButton);
         sessionCode = findViewById(R.id.sessionCode);
-        sessionName = findViewById(R.id.sessionInput);
         recyclerView = findViewById(R.id.RecyclerMates);
-
-        FirebaseRecyclerOptions<Music> options =
-                new FirebaseRecyclerOptions.Builder<Music>()
-                        .setQuery(musicdb, Music.class)
-                        .build();
-
-        adapter = new MusicAdapter(options);
-        recyclerView.setAdapter(adapter);
-
-        matesdb2.addValueEventListener(new ValueEventListener() {
+        userdb.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     String code = dataSnapshot.child("id").getValue().toString();
+                    Log.i(TAG, "onDataChange: "+ code);
                     sessionCode.setText(code);
                 }else
                 {
@@ -74,16 +65,37 @@ public class CreateSessionHome extends AppCompatActivity {
 
             }
         });
-
+        getSongs();
 
     }
 
+    private void getSongs() {
+        final DatabaseReference[] db = new DatabaseReference[1];
+        userdb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    String value = dataSnapshot.child("id").getValue().toString();
+                    Log.i(TAG, "onDataChange: "+ value);
+                    db[0] = FirebaseDatabase.getInstance().getReference("MatesSessionID").child(value).child("Songs");
+                    FirebaseRecyclerOptions<Music> options= new FirebaseRecyclerOptions.Builder<Music>()
+                            .setQuery(db[0], Music.class)
+                            .build();
+                    adapter = new MatesMusicAdapter(options);
+                    recyclerView.setAdapter(adapter);
+                    adapter.startListening();
+                }
+            }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        adapter.startListening();
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
+
+    private static final String TAG="CreateSessionHome";
+
 
     @Override
     protected void onStop() {
@@ -99,4 +111,11 @@ public class CreateSessionHome extends AppCompatActivity {
         shareIntent.putExtra(Intent.EXTRA_TEXT, code);
         startActivity(shareIntent.createChooser(shareIntent,"Share"));
     }
+
+    public void newSearch(View view){
+        Intent myIntent = new Intent(this, Mates_Search.class);
+        startActivity(myIntent);
+        finish();
+    }
+
 }

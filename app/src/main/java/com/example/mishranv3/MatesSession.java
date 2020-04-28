@@ -2,12 +2,11 @@ package com.example.mishranv3;
 
 public class MatesSession {
 
-    String name,id,userID;
+    String name,id;
 
-    public MatesSession(String name, String id, String userID) {
+    public MatesSession(String name, String id) {
         this.name = name;
         this.id = id;
-        this.userID = userID;
     }
 
     public String getName() {
@@ -24,13 +23,5 @@ public class MatesSession {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
     }
 }

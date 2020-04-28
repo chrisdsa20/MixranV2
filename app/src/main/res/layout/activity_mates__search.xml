@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PartyJoin"
+    tools:context=".Mates_Search"
     android:background="@drawable/gradient_background">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/partyJoin_nav"
+        android:id="@+id/createSession_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:itemIconTint="@drawable/selector"
@@ -19,18 +19,18 @@
         app:layout_constraintVertical_bias="1.0"
         app:menu="@menu/menu_nav"/>
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclermates"
+        android:layout_width="409dp"
+        android:layout_height="555dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginRight="2dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.171"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.24" />
+        app:layout_constraintVertical_bias="0.681" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

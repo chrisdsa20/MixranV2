@@ -2,19 +2,10 @@ package com.example.mishranv3;
 
 public class MatesSessions {
 
-    String name,id;
+    String id;
 
-    public MatesSessions(String name, String id) {
-        this.name = name;
+    public MatesSessions( String id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getId() {

@@ -3,19 +3,30 @@ package com.example.mishranv3;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Telephony;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -43,24 +54,24 @@ public class MatesCreateSession extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch(item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.search:
                         startActivity(new Intent(getApplicationContext(), Search.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
                     case R.id.party:
                         startActivity(new Intent(getApplicationContext(), Party.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
                     case R.id.solo:
                         startActivity(new Intent(getApplicationContext(), Solo.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
                     case R.id.mates:
                         return true;
                     case R.id.profile:
                         startActivity(new Intent(getApplicationContext(), userProfile.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
 
                 }
@@ -72,21 +83,35 @@ public class MatesCreateSession extends AppCompatActivity {
 
     }
 
-
-    public void onClickListener(View view){
-        Intent myIntent = new Intent(this, CreateSessionHome.class);
+    public void onClick(View view){
         sessionData();
+        Toast.makeText(this, "Data Sent", Toast.LENGTH_SHORT).show();
+        Intent myIntent = new Intent(this, CreateSessionHome.class);
+        startActivity(myIntent);
+    }
+
+    public void newSearch(View view){
+        Intent myIntent = new Intent(this, solo_search.class);
         startActivity(myIntent);
         finish();
     }
 
+
     private void sessionData(){
+        String sessionName = name.getText().toString();
         String currentUser = mAuth.getCurrentUser().getUid();
         String id = db.push().getKey();
 
-        MatesSessions matesSessions = new MatesSessions(currentUser,id);
-        db.child(id).setValue(matesSessions);
+        MatesSessions matesSessions = new MatesSessions(id);
+        MatesSession matesSession = new MatesSession(sessionName,id);
+        db.child(id).setValue(matesSession);
         db2.child(currentUser).setValue(matesSessions);
+    }
+
+    public void addMusicListener(View view){
+        Intent myIntent = new Intent(this, solo_search.class);
+        startActivity(myIntent);
+        finish();
     }
 
 

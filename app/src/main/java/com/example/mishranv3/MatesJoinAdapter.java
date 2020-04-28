@@ -2,7 +2,6 @@ package com.example.mishranv3;
 
 import android.media.MediaPlayer;
 import android.os.Build;
-import android.renderscript.Sampler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,17 +26,15 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 
-class SearchAdapter extends FirebaseRecyclerAdapter<Music, SearchAdapter.SearchViewHolder> {
-
+public class MatesJoinAdapter extends FirebaseRecyclerAdapter<Music, MatesJoinAdapter.MatesViewHolder> {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String currentUser = mAuth.getCurrentUser().getUid();
     DatabaseReference userdb = FirebaseDatabase.getInstance().getReference("MatesSession").child(currentUser);
     DatabaseReference db;
 
-    private static final String TAG="SearchAdapter";
-    public SearchAdapter(@NonNull FirebaseRecyclerOptions<Music> options) {
+    private static final String TAG="MatesJoinAdapter";
+    public MatesJoinAdapter(@NonNull FirebaseRecyclerOptions<Music> options) {
         super(options);
-
         userdb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -56,7 +53,8 @@ class SearchAdapter extends FirebaseRecyclerAdapter<Music, SearchAdapter.SearchV
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull SearchViewHolder holder, int position, @NonNull final Music model) {
+    protected void onBindViewHolder(@NonNull MatesViewHolder holder, int position, @NonNull final Music model) {
+
         final MediaPlayer mediaPlayer = new MediaPlayer();
         holder.Name.setText(model.getName());
         holder.Artist.setText(model.getArtist());
@@ -93,56 +91,48 @@ class SearchAdapter extends FirebaseRecyclerAdapter<Music, SearchAdapter.SearchV
             @Override
             public void onClick(View v) {
                 if(mediaPlayer.isPlaying()){
-                    mediaPlayer.stop();
+                    mediaPlayer.pause();
                 }
             }
         });
-
-        holder.add.setOnClickListener(new View.OnClickListener() {
+        holder.remove.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                    String name = model.getName();
-                    String artist = model.getArtist();
-                    String duration = model.getDuration();
-                    String song = model.getSong();
-                    String genre = model.getGenre();
+            public void onClick(final View v) {
+                String name = model.getName();
+                String artist = model.getArtist();
+                String duration = model.getDuration();
+                String song = model.getSong();
+                String genre = model.getGenre();
 
-                    Music music = new Music(artist,duration,genre,name,song);
-                    db.child(name).setValue(music);
-                    Toast.makeText(v.getContext(), "Song added to playlist", Toast.LENGTH_SHORT).show();
-
+                Music music = new Music(artist,duration,genre,name,song);
+                db.child(name).setValue(music);
+                Toast.makeText(v.getContext(), "Song added to playlist", Toast.LENGTH_SHORT).show();
 
 
             }
         });
-
-
     }
 
     @NonNull
     @Override
-    public SearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.playlist_layout, parent,false);
-        return new SearchAdapter.SearchViewHolder(view);
+    public MatesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.playlist_layout_remove, parent,false);
+        return new MatesViewHolder(view);
     }
 
-    public class SearchViewHolder extends RecyclerView.ViewHolder {
-
+    public class MatesViewHolder extends RecyclerView.ViewHolder {
         TextView Name,Artist,Duration;
         ConstraintLayout constraintLayout;
-        ImageView playButton, pauseButton, add;
-        public SearchViewHolder(@NonNull View itemView) {
+        ImageView playButton, pauseButton, remove;
+        public MatesViewHolder(@NonNull View itemView) {
             super(itemView);
-
             Name = itemView.findViewById(R.id.songName);
             Artist = itemView.findViewById(R.id.artistName);
             Duration = itemView.findViewById(R.id.duration);
             constraintLayout = itemView.findViewById(R.id.constraintlayout);
             playButton = itemView.findViewById(R.id.play);
             pauseButton = itemView.findViewById(R.id.pause);
-            add = itemView.findViewById(R.id.add);
+            remove = itemView.findViewById(R.id.remove);
         }
     }
-
-
 }
