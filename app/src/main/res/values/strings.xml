@@ -42,5 +42,6 @@
     <string name="session">Session</string>
     <string name="edit_code">Edit Code</string>
     <string name="hint">hint</string>
+    <string name="your_recommendations">Your Recommendations</string>
 
 </resources>

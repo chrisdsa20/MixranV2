@@ -53,8 +53,8 @@ public class PartyCreate extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.search:
-                        startActivity(new Intent(getApplicationContext(), Search.class));
+                    case R.id.home:
+                        startActivity(new Intent(getApplicationContext(), userHome.class));
                         overridePendingTransition(0, 0);
                         return true;
                     case R.id.party:
@@ -99,7 +99,7 @@ public class PartyCreate extends AppCompatActivity {
 
     public void createParty(View view){
 
-        String id = db.push().getKey();
+        String id = db.push().getKey(); //Unique code for session
         String partyName = name.getText().toString();
         String partyDate= date.getText().toString();
         String partyDescription = description.getText().toString();
@@ -112,7 +112,7 @@ public class PartyCreate extends AppCompatActivity {
         }
         else{
             PartyID partyID = new PartyID(partyName,partyDescription,id,partyDate);
-            PartySessions partySessions = new PartySessions(partyName,partyDescription,id,partyDate,permission);
+            PartySessions partySessions = new PartySessions(id,permission);
             db.child(id).setValue(partyID);
             db2.child(currentUser).setValue(partySessions);
             Toast.makeText(this, "Party Created", Toast.LENGTH_SHORT).show();

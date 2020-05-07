@@ -61,7 +61,7 @@ public class Home extends AppCompatActivity {
             }
         });
     }
-
+//OnClickHandlers to take users to different modes
     public void onClickParty(View view){
         Intent party = new Intent(this, Party.class);
         startActivity(party);

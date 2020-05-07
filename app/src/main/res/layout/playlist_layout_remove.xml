@@ -10,6 +10,7 @@
         android:id="@+id/artistName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#ffffff"
         android:text="@string/text_view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,6 +21,7 @@
 
     <TextView
         android:id="@+id/songName"
+        android:textColor="#ffffff"
         android:layout_width="191dp"
         android:layout_height="23dp"
         android:layout_marginTop="16dp"
@@ -33,6 +35,7 @@
 
     <TextView
         android:id="@+id/duration"
+        android:textColor="#ffffff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -55,7 +58,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="16dp"
-
         android:background="#00FFFFFF"
         android:contentDescription="TODO"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -67,38 +69,36 @@
         app:srcCompat="@drawable/ic_play_arrow_black_24dp" />
 
     <ImageView
-        android:id="@+id/pause"
+        android:id="@+id/stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/songName"
-        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintEnd_toStartOf="@+id/clientsongName"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/play"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_pause_black_24dp" />
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_stop_black_24dp" />
 
-    <EditText
-        android:id="@+id/rating"
-        android:layout_width="60dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="16dp"
-        android:ems="1"
-        android:inputType="textPersonName"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/songName"
-        app:layout_constraintTop_toTopOf="parent" />
+
 
     <ImageView
         android:id="@+id/remove"
+        android:textColor="#ffffff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toEndOf="@+id/rating"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_remove_black_24dp" />
 
 

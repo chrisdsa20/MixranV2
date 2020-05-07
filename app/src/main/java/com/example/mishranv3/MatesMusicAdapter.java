@@ -1,6 +1,7 @@
 package com.example.mishranv3;
 
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,8 +32,10 @@ public class MatesMusicAdapter extends FirebaseRecyclerAdapter<Music, MatesMusic
 
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String currentUser = mAuth.getCurrentUser().getUid();
-    DatabaseReference userdb = FirebaseDatabase.getInstance().getReference("PartySession").child(currentUser);
+    DatabaseReference userdb = FirebaseDatabase.getInstance().getReference("MatesSession").child(currentUser);
     DatabaseReference db;
+    MediaPlayer mediaPlayer;
+    private boolean flag = true;
 
     private static final String TAG="MatesMusicHolder";
     public MatesMusicAdapter(FirebaseRecyclerOptions<Music> options){
@@ -43,7 +46,7 @@ public class MatesMusicAdapter extends FirebaseRecyclerAdapter<Music, MatesMusic
                 if(dataSnapshot.exists()){
                     String value = dataSnapshot.child("id").getValue().toString();
                     Log.i(TAG, "onDataChange: "+ value);
-                    db= FirebaseDatabase.getInstance().getReference("PartyID").child(value).child("Songs");
+                    db= FirebaseDatabase.getInstance().getReference("MatesSessionID").child(value).child("Songs");
                 }
             }
 
@@ -56,10 +59,8 @@ public class MatesMusicAdapter extends FirebaseRecyclerAdapter<Music, MatesMusic
 
 
             }
-
     @Override
-    protected void onBindViewHolder(@NonNull MatesHolder holder, int position, @NonNull final Music model) {
-                final MediaPlayer mediaPlayer = new MediaPlayer();
+    protected void onBindViewHolder(@NonNull final MatesHolder holder, int position, @NonNull final Music model) {
                 holder.Name.setText(model.getName());
                 holder.Artist.setText(model.getArtist());
                 holder.Duration.setText(model.getDuration());
@@ -67,62 +68,62 @@ public class MatesMusicAdapter extends FirebaseRecyclerAdapter<Music, MatesMusic
                     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
                     @Override
                     public void onClick(View v) {
-                        MediaPlayer mediaPlayer = new MediaPlayer();
-                        try {
-                            mediaPlayer.setDataSource(model.getSong());
-                            mediaPlayer.prepare();
-                            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                                @Override
-                                public void onPrepared(MediaPlayer mp) {
-                                    Log.e(TAG, "onPrepared: Buffering ");
-                                }
-
-                            });
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        if(!mediaPlayer.isPlaying()){
-                            mediaPlayer.start();
-                            Log.i(TAG, "onClick: Music Playing");
+                        String song = model.getSong();
+                        Uri newSong = Uri.parse(song);
+                        Toast.makeText(v.getContext(), "Buffering....", Toast.LENGTH_SHORT).show();
+                        if(flag){
+                            mediaPlayer = MediaPlayer.create(v.getContext(),newSong);
+                            flag = false;
+                        }if(mediaPlayer.isPlaying()){
+                            mediaPlayer.pause();
+                            holder.playButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
                         }
                         else{
-                            mediaPlayer.pause();
-                            Log.i(TAG, "onClick: Music Paused");
-                        }
-                    }
-                });
-                holder.pauseButton.setOnClickListener(new View.OnClickListener() {
+                            mediaPlayer.start();
+                            Toast.makeText(v.getContext(), "Song is playing", Toast.LENGTH_SHORT).show();
+                            holder.playButton.setImageResource(R.drawable.ic_pause_black_24dp);
+                            }
+                     }
+                    });
+
+                holder.stopButton.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-                        if(mediaPlayer.isPlaying()){
-                            mediaPlayer.pause();
+                        if(!flag){
+                            mediaPlayer.stop();
+                            mediaPlayer.release();
+                            flag = true;
+                            holder.playButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
                         }
                     }
                 });
                 holder.remove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(final View v) {
-                        userdb.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.exists()){
-                                    String value = dataSnapshot.child("id").getValue().toString();
-                                    Log.i(TAG, "onDataChange: "+ value);
-                                    db= FirebaseDatabase.getInstance().getReference("MatesSessionID").child(value).child("Songs")
-                                            .child(model.Name);
-                                    db.removeValue();
-                                    Toast.makeText(v.getContext(),"Song Removed",Toast.LENGTH_SHORT).show();
+                        @Override
+                        public void onClick(final View v) {
+                            userdb.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        String value = dataSnapshot.child("id").getValue().toString();
+                                        Log.i(TAG, "onDataChange: " + value);
+                                        db = FirebaseDatabase.getInstance().getReference("MatesSessionID").child(value).child("Songs")
+                                                .child(model.Name);
+                                        db.removeValue();
+                                        Toast.makeText(v.getContext(), "Song Removed", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            }
-                        });
-
-                    }
+                                }
+                            });
+                        }
                 });
+
+
+
+
             }
 
     @NonNull
@@ -136,7 +137,7 @@ public class MatesMusicAdapter extends FirebaseRecyclerAdapter<Music, MatesMusic
 
         TextView Name,Artist,Duration;
         ConstraintLayout constraintLayout;
-        ImageView playButton, pauseButton, remove;
+        ImageView playButton, stopButton, remove;
 
         public MatesHolder(@NonNull View itemView) {
             super(itemView);
@@ -145,7 +146,7 @@ public class MatesMusicAdapter extends FirebaseRecyclerAdapter<Music, MatesMusic
             Duration = itemView.findViewById(R.id.duration);
             constraintLayout = itemView.findViewById(R.id.constraintlayout);
             playButton = itemView.findViewById(R.id.play);
-            pauseButton = itemView.findViewById(R.id.pause);
+            stopButton = itemView.findViewById(R.id.stop);
             remove = itemView.findViewById(R.id.remove);
         }
     }

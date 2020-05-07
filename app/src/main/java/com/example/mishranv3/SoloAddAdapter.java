@@ -1,6 +1,7 @@
 package com.example.mishranv3;
 
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,19 +23,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
+import java.net.URI;
 
 public class SoloAddAdapter extends FirebaseRecyclerAdapter<Music, SoloAddAdapter.SoloAddViewHolder > {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String currentUser = mAuth.getCurrentUser().getUid();
-    DatabaseReference db = FirebaseDatabase.getInstance().getReference("UserMusic");
+    DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("UserMusic");
     private static final String TAG="SoloAddAdapter";
+    private boolean flag = true;
+    private MediaPlayer mediaPlayer;
     public SoloAddAdapter(@NonNull FirebaseRecyclerOptions<Music> options) {
         super(options);
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull SoloAddViewHolder holder, int position, @NonNull final Music model) {
-        final MediaPlayer mediaPlayer = new MediaPlayer();
+    protected void onBindViewHolder(@NonNull final SoloAddViewHolder holder, int position, @NonNull final Music model) {
+
         holder.Name.setText(model.getName());
         holder.Artist.setText(model.getArtist());
         holder.Duration.setText(model.getDuration());
@@ -42,39 +46,35 @@ public class SoloAddAdapter extends FirebaseRecyclerAdapter<Music, SoloAddAdapte
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                MediaPlayer mediaPlayer = new MediaPlayer();
-                try {
-                    mediaPlayer.setDataSource(model.getSong());
-                    mediaPlayer.prepare();
-                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mp) {
-                            Log.e(TAG, "onPrepared: Buffering ");
-                        }
-
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if(!mediaPlayer.isPlaying()){
-                    mediaPlayer.start();
-                    Log.i(TAG, "onClick: Music Playing");
+                String song = model.getSong();
+                Uri newSong = Uri.parse(song);
+                if(flag){
+                    mediaPlayer = MediaPlayer.create(v.getContext(),newSong);
+                    flag = false;
+                    Toast.makeText(v.getContext(), "Buffering....", Toast.LENGTH_SHORT).show();
+                }if(mediaPlayer.isPlaying()){
+                    mediaPlayer.pause();
+                    holder.playButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
                 }
                 else{
-                    mediaPlayer.pause();
-                    Log.i(TAG, "onClick: Music Paused");
+                    mediaPlayer.start();
+                    Toast.makeText(v.getContext(), "Song is playing", Toast.LENGTH_SHORT).show();
+                    holder.playButton.setImageResource(R.drawable.ic_pause_black_24dp);
                 }
             }
         });
-        holder.pauseButton.setOnClickListener(new View.OnClickListener() {
+        holder.stopButton.setOnClickListener(new View.OnClickListener(){
+
             @Override
             public void onClick(View v) {
-                if(mediaPlayer.isPlaying()){
-                    mediaPlayer.pause();
+                if(!flag){
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    flag = true;
+                    holder.playButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
                 }
             }
         });
-
         holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,12 +87,8 @@ public class SoloAddAdapter extends FirebaseRecyclerAdapter<Music, SoloAddAdapte
                 Music music = new Music(artist,duration,genre,name,song);
                 db.child(currentUser).child(name).setValue(music);
                 Toast.makeText(v.getContext(), "Song added to playlist", Toast.LENGTH_SHORT).show();
-
-
-
             }
         });
-
     }
 
     @NonNull
@@ -105,18 +101,19 @@ public class SoloAddAdapter extends FirebaseRecyclerAdapter<Music, SoloAddAdapte
     public class SoloAddViewHolder extends RecyclerView.ViewHolder {
         TextView Name,Artist,Duration;
         ConstraintLayout constraintLayout;
-        ImageView playButton, pauseButton, add;
+        ImageView playButton, stopButton, add;
 
         public SoloAddViewHolder(@NonNull View itemView) {
             super(itemView);
-            Name = itemView.findViewById(R.id.songName);
+            Name = itemView.findViewById(R.id.clientsongName);
             Artist = itemView.findViewById(R.id.artistName);
             Duration = itemView.findViewById(R.id.duration);
             constraintLayout = itemView.findViewById(R.id.constraintlayout);
             playButton = itemView.findViewById(R.id.play);
-            pauseButton = itemView.findViewById(R.id.pause);
+            stopButton = itemView.findViewById(R.id.stop);
             add = itemView.findViewById(R.id.add);
         }
     }
+
 
 }

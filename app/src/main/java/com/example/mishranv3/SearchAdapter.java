@@ -1,6 +1,7 @@
 package com.example.mishranv3;
 
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.renderscript.Sampler;
 import android.util.Log;
@@ -33,6 +34,8 @@ class SearchAdapter extends FirebaseRecyclerAdapter<Music, SearchAdapter.SearchV
     String currentUser = mAuth.getCurrentUser().getUid();
     DatabaseReference userdb = FirebaseDatabase.getInstance().getReference("MatesSession").child(currentUser);
     DatabaseReference db;
+    MediaPlayer mediaPlayer;
+    private boolean flag = true;
 
     private static final String TAG="SearchAdapter";
     public SearchAdapter(@NonNull FirebaseRecyclerOptions<Music> options) {
@@ -56,8 +59,7 @@ class SearchAdapter extends FirebaseRecyclerAdapter<Music, SearchAdapter.SearchV
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull SearchViewHolder holder, int position, @NonNull final Music model) {
-        final MediaPlayer mediaPlayer = new MediaPlayer();
+    protected void onBindViewHolder(@NonNull final SearchViewHolder holder, int position, @NonNull final Music model) {
         holder.Name.setText(model.getName());
         holder.Artist.setText(model.getArtist());
         holder.Duration.setText(model.getDuration());
@@ -65,31 +67,38 @@ class SearchAdapter extends FirebaseRecyclerAdapter<Music, SearchAdapter.SearchV
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                MediaPlayer mediaPlayer = new MediaPlayer();
-                try {
-                    mediaPlayer.setDataSource(model.getSong());
-                    mediaPlayer.prepare();
-                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mp) {
-                            Log.e(TAG, "onPrepared: Buffering ");
-                        }
-
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if(!mediaPlayer.isPlaying()){
-                    mediaPlayer.start();
-                    Log.i(TAG, "onClick: Music Playing");
+                String song = model.getSong();
+                Uri newSong = Uri.parse(song);
+                if(flag){
+                    mediaPlayer = MediaPlayer.create(v.getContext(),newSong);
+                    flag = false;
+                    Toast.makeText(v.getContext(), "Buffering....", Toast.LENGTH_SHORT).show();
+                }if(mediaPlayer.isPlaying()){
+                    mediaPlayer.pause();
+                    holder.playButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
                 }
                 else{
-                    mediaPlayer.pause();
-                    Log.i(TAG, "onClick: Music Paused");
+                    mediaPlayer.start();
+                    Toast.makeText(v.getContext(), "Song is playing", Toast.LENGTH_SHORT).show();
+                    holder.playButton.setImageResource(R.drawable.ic_pause_black_24dp);
+
                 }
             }
         });
-        holder.pauseButton.setOnClickListener(new View.OnClickListener() {
+
+        holder.stopButton.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                if(!flag){
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    flag = true;
+                    holder.playButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
+                }
+            }
+        });
+        holder.stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mediaPlayer.isPlaying()){
@@ -130,16 +139,16 @@ class SearchAdapter extends FirebaseRecyclerAdapter<Music, SearchAdapter.SearchV
 
         TextView Name,Artist,Duration;
         ConstraintLayout constraintLayout;
-        ImageView playButton, pauseButton, add;
+        ImageView playButton, stopButton, add;
         public SearchViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            Name = itemView.findViewById(R.id.songName);
+            Name = itemView.findViewById(R.id.clientsongName);
             Artist = itemView.findViewById(R.id.artistName);
             Duration = itemView.findViewById(R.id.duration);
             constraintLayout = itemView.findViewById(R.id.constraintlayout);
             playButton = itemView.findViewById(R.id.play);
-            pauseButton = itemView.findViewById(R.id.pause);
+            stopButton = itemView.findViewById(R.id.stop);
             add = itemView.findViewById(R.id.add);
         }
     }

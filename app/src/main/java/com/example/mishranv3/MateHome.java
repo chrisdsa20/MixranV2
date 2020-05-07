@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,9 +22,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import static android.widget.Toast.*;
+
 public class MateHome extends AppCompatActivity {
 
-    DatabaseReference db;
+    DatabaseReference db, userdb;
     FirebaseAuth mAuth;
     String currentUser;
     ImageView shareButton;
@@ -35,11 +38,12 @@ public class MateHome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mate_home);
-        shareButton = findViewById(R.id.imageView21);
+        shareButton = findViewById(R.id.mateShare);
         code = findViewById(R.id.latestMatesCode);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser().getUid();
-        db = FirebaseDatabase.getInstance().getReference();
+        db = FirebaseDatabase.getInstance().getReference().child("MatesSession").child(currentUser);
+        userdb = FirebaseDatabase.getInstance().getReference();
 
         bottomNavigationView = findViewById(R.id.bottom_nav);
 
@@ -48,8 +52,8 @@ public class MateHome extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch(item.getItemId()){
-                    case R.id.search:
-                        startActivity(new Intent(getApplicationContext(), Search.class));
+                    case R.id.home:
+                        startActivity(new Intent(getApplicationContext(), userHome.class));
                         overridePendingTransition(0,0);
                         return true;
                     case R.id.party:
@@ -72,21 +76,35 @@ public class MateHome extends AppCompatActivity {
                 return false;
             }
         });
-
-        db.addValueEventListener(new ValueEventListener() {
+//Finds the users favourite genre, and shows songs based on this
+        userdb.child("MatesSession").child(currentUser).child("id").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()){
-                    code.setVisibility(View.INVISIBLE);
-                    shareButton.setVisibility(View.INVISIBLE);
-                }else{
-                    String value = dataSnapshot.child("MatesSession").child(currentUser).child("id")
-                            .getValue().toString();
+                if (dataSnapshot.exists()) {
+                    String value = dataSnapshot.getValue().toString();
                     code.setText(value);
 
+                }else{
+                    code.setVisibility(View.INVISIBLE);
+                    shareButton.setVisibility(View.INVISIBLE);
                 }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+    }
 
+    public void onClickHandler(final View view){
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child("permission").getValue().equals("true")){
+                    goSessionHome();
+                }else{
+                    goJoinHome();
+                }
             }
 
             @Override
@@ -115,8 +133,14 @@ public class MateHome extends AppCompatActivity {
         startActivity(shareIntent.createChooser(shareIntent,"Share"));
     }
 
-    public void goToSession(View view){
+    public void goSessionHome(){
         Intent myIntent = new Intent(this,CreateSessionHome.class);
         startActivity(myIntent);
     }
+
+    public void goJoinHome(){
+        Intent myIntent = new Intent(this,MatesJoinHome.class);
+        startActivity(myIntent);
+    }
+
 }

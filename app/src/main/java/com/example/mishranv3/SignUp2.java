@@ -31,23 +31,4 @@ public class SignUp2 extends AppCompatActivity {
         DatabaseReff = db.getInstance().getReference("Genre");
         mAuth = FirebaseAuth.getInstance();
     }
-//Saves the users Favourite Genre
-    public void sendGenre(){
-        //The data is stored using the users unique ID from the Authentication section
-        String currentUser = mAuth.getCurrentUser().getUid();
-        String Genre1 = favgenre1.getText().toString();
-        String Genre2 = favgenre2.getText().toString();
-        String Genre3 = favgenre3.getText().toString();
-
-
-        Genre genre = new Genre(Genre1,Genre2,Genre3);
-
-        DatabaseReff.child(currentUser).setValue(genre);
-    }
-
-    public void onClickHandler(View view){
-        Intent myIntent = new Intent(SignUp2.this, Home.class);
-        sendGenre();
-        startActivity(myIntent);
-    }
 }

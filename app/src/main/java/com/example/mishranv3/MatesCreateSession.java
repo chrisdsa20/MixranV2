@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Telephony;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -55,8 +56,8 @@ public class MatesCreateSession extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.search:
-                        startActivity(new Intent(getApplicationContext(), Search.class));
+                    case R.id.home:
+                        startActivity(new Intent(getApplicationContext(), userHome.class));
                         overridePendingTransition(0, 0);
                         return true;
                     case R.id.party:
@@ -84,10 +85,18 @@ public class MatesCreateSession extends AppCompatActivity {
     }
 
     public void onClick(View view){
-        sessionData();
-        Toast.makeText(this, "Data Sent", Toast.LENGTH_SHORT).show();
-        Intent myIntent = new Intent(this, CreateSessionHome.class);
-        startActivity(myIntent);
+        String sessionname= name.getText().toString();
+
+//Check to see if user has filled out session name
+        if(TextUtils.isEmpty(sessionname)){
+            Toast.makeText(this,"Please enter a name...", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this, "Data Sent", Toast.LENGTH_SHORT).show();
+            Intent myIntent = new Intent(this, CreateSessionHome.class);
+            startActivity(myIntent);
+            sessionData();
+        }
+
     }
 
     public void newSearch(View view){
@@ -100,19 +109,15 @@ public class MatesCreateSession extends AppCompatActivity {
     private void sessionData(){
         String sessionName = name.getText().toString();
         String currentUser = mAuth.getCurrentUser().getUid();
-        String id = db.push().getKey();
+        String permission = "true"; //Set to true so tha the initiator of the session is able to play music
+        String id = db.push().getKey(); //Generates random key that will be used as the session ID
 
-        MatesSessions matesSessions = new MatesSessions(id);
+        MatesSessions matesSessions = new MatesSessions(id,permission);
         MatesSession matesSession = new MatesSession(sessionName,id);
         db.child(id).setValue(matesSession);
         db2.child(currentUser).setValue(matesSessions);
     }
 
-    public void addMusicListener(View view){
-        Intent myIntent = new Intent(this, solo_search.class);
-        startActivity(myIntent);
-        finish();
-    }
 
 
 }

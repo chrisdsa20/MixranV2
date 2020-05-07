@@ -1,16 +1,14 @@
 package com.example.mishranv3;
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -22,28 +20,45 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+public class PartyJoinHome extends AppCompatActivity {
 
-public class Party extends AppCompatActivity {
-
-    DatabaseReference db;
-    FirebaseAuth mAuth;
+    DatabaseReference userdb,db;
+    RecyclerView recyclerView;
+    matesClientAdapter clientAdapter;
     String currentUser;
-    TextView code, partyName;
-    ImageView share;
+    FirebaseAuth mAuth;
+    TextView sessionCode;
     BottomNavigationView bottomNavigationView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_party);
+        setContentView(R.layout.activity_party_join_home);
         mAuth = FirebaseAuth.getInstance();
+        recyclerView = findViewById(R.id.RecyclerJoinMates);
         currentUser = mAuth.getCurrentUser().getUid();
-        db = FirebaseDatabase.getInstance().getReference().child("PartySession").child(currentUser);
-        code = findViewById(R.id.latestPartyCode);
-        partyName = findViewById(R.id.partyName);
-        bottomNavigationView = findViewById(R.id.party_nav);
-        share = findViewById(R.id.partyShare);
+        sessionCode = findViewById(R.id.partyJoinCode);
+        userdb = FirebaseDatabase.getInstance().getReference("PartySession").child(currentUser);
+        userdb.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String code = dataSnapshot.child("id").getValue().toString();
+                    Log.i(TAG, "onDataChange: " + code);
+                    sessionCode.setText(code);
+                } else {
+                    sessionCode.setText("Welcome");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        clientSong();
+
+        bottomNavigationView = findViewById(R.id.partyJoinbottom_nav);
         bottomNavigationView.setSelectedItemId(R.id.party);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -73,57 +88,23 @@ public class Party extends AppCompatActivity {
                 return false;
             }
         });
-//Allows the user to see the latest session, and the user is able to join by clicking on the code
-        //User is also able to share this code
-        db.addValueEventListener(new ValueEventListener() {
+    }
+
+    public void clientSong(){
+        final DatabaseReference[] db = new DatabaseReference[1];
+        userdb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("id").exists()) {
+                if(dataSnapshot.exists()){
                     String value = dataSnapshot.child("id").getValue().toString();
-                    code.setText(value);
-                }else{
-                    code.setVisibility(View.INVISIBLE);
-                    share.setVisibility(View.INVISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-
-    }
-    public void onClick(View view){
-        Intent myIntent = new Intent(this, PartyCreate.class);
-        startActivity(myIntent);
-    }
-
-    public void goToJoin(){
-        Intent myIntent = new Intent(this,PartyJoinHome.class);
-        startActivity(myIntent);
-    }
-    public void goToCreate(){
-        Intent myIntent = new Intent(this, CreatePartyHome.class);
-        startActivity(myIntent);
-    }
-
-    public void partyjoin(View view){
-        Intent myIntent = new Intent(this, PartyJoin.class);
-        startActivity(myIntent);
-    }
-
-    public void goToSession(final View view){
-        db.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("permission").getValue().equals("true")){
-                    goToCreate();
-                }else{
-                    goToJoin();
+                    Log.i(TAG, "onDataChange: "+ value);
+                    db[0] = FirebaseDatabase.getInstance().getReference("PartyID").child(value).child("Songs");
+                    FirebaseRecyclerOptions<Music> options= new FirebaseRecyclerOptions.Builder<Music>()
+                            .setQuery(db[0], Music.class)
+                            .build();
+                    clientAdapter = new matesClientAdapter(options);
+                    recyclerView.setAdapter(clientAdapter);
+                    clientAdapter.startListening();
                 }
             }
 
@@ -134,15 +115,24 @@ public class Party extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        clientAdapter.stopListening();
+    }
     public void shareHandler(View view){
-        String sessionCode = code.getText().toString();
+        String code = sessionCode.getText().toString();
 
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, sessionCode);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, code);
         startActivity(shareIntent.createChooser(shareIntent,"Share"));
     }
 
-    private static final String TAG = "Party";
+    public void newSearch(View view){
+        Intent myIntent = new Intent(this, PartySearch.class);
+        startActivity(myIntent);
+    }
 
+    private static final String TAG = "PartyJoinHome";
 }

@@ -1,5 +1,5 @@
 package com.example.mishranv3;
-
+//Music class so that the application is able to receive the songs from the database
 public class Music {
 
     String Artist;
@@ -8,16 +8,6 @@ public class Music {
     String Name;
     String Song;
 
-    @Override
-    public String toString() {
-        return "Music{" +
-                "Artist='" + Artist + '\'' +
-                ", Duration='" + Duration + '\'' +
-                ", Genre='" + Genre + '\'' +
-                ", Name='" + Name + '\'' +
-                ", Song='" + Song + '\'' +
-                '}';
-    }
 
     public Music(String artist, String duration, String genre, String name, String song) {
         Artist = artist;
@@ -27,9 +17,7 @@ public class Music {
         Song = song;
     }
 
-
     public Music() {
-
     }
 
     public String getArtist() {

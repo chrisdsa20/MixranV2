@@ -23,12 +23,12 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUp extends AppCompatActivity {
 
-    EditText username, pass, email, confirm_email;
+    EditText username, pass, email, confirm_email,favGenre;
     FirebaseAuth mAuth;
     FirebaseDatabase db;
 
 
-    DatabaseReference DatabaseReff;
+    DatabaseReference DatabaseReff,genredb;
 
     private static final String TAG = "SignUp";
 
@@ -41,10 +41,11 @@ public class SignUp extends AppCompatActivity {
         pass = findViewById(R.id.passInsert);
         email = findViewById(R.id.emailInsert);
         confirm_email = findViewById(R.id.confirmEmail);
-
+        favGenre = findViewById(R.id.favGenreSet);
 
         mAuth = FirebaseAuth.getInstance();
         DatabaseReff = db.getInstance().getReference("Member");
+        genredb = FirebaseDatabase.getInstance().getReference("Genre");
 
     }
 
@@ -76,6 +77,7 @@ public class SignUp extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 sendUser();
                                 newPage();
+                                saveGenre();
 
                             } else {
                                 String message = task.getException().getMessage();
@@ -104,8 +106,17 @@ public class SignUp extends AppCompatActivity {
     }
 //Takes the user to the next page
     private void newPage() {
-        Intent newPage = new Intent(this, SignUp2.class);
+        Intent newPage = new Intent(this, Home.class);
         startActivity(newPage);
+    }
+
+    private void saveGenre(){
+        String currentUser = mAuth.getCurrentUser().getUid();
+        String favgenre = favGenre.getText().toString();
+
+        Genre genre = new Genre(favgenre);
+
+        genredb.child(currentUser).setValue(genre);
     }
 }
 

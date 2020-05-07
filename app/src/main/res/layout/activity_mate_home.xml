@@ -36,20 +36,22 @@
 
     <TextView
         android:id="@+id/textView8"
+        android:textColor="#ffffff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="178dp"
         android:layout_marginLeft="178dp"
-        android:layout_marginTop="49dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="175dp"
         android:layout_marginRight="175dp"
-        android:layout_marginBottom="81dp"
         android:text="@string/logo"
         android:textSize="36sp"
-        app:layout_constraintBottom_toTopOf="@+id/button7"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.525"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.08" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
@@ -69,6 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Latest Mates Session"
+        android:textColor="#ffffff"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
         app:layout_constraintEnd_toEndOf="parent"
@@ -83,8 +86,9 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="goToSession"
+        android:onClick="onClickHandler"
         android:text="@string/code"
+        android:textColor="#ffffff"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +98,7 @@
         app:layout_constraintVertical_bias="0.301" />
 
     <ImageView
-        android:id="@+id/imageView21"
+        android:id="@+id/mateShare"
         android:layout_width="39dp"
         android:layout_height="41dp"
         android:clickable="true"

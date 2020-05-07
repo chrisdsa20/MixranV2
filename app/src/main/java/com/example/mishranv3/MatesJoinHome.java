@@ -1,18 +1,14 @@
 package com.example.mishranv3;
 
-//The Home page after the user has joined a session
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.renderscript.Sampler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -22,35 +18,28 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-public class CreateSessionHome extends AppCompatActivity {
+public class MatesJoinHome extends AppCompatActivity {
 
-
-    DatabaseReference userdb, userCode;
-    FirebaseAuth mAuth;
-    ImageView shareButton;
-    String currentUser;
-    TextView sessionCode;
+    DatabaseReference userdb;
     RecyclerView recyclerView;
-    MatesMusicAdapter adapter;
-    String text;
+    matesClientAdapter clientAdapter;
+    String currentUser;
+    FirebaseAuth mAuth;
+    TextView sessionCode;
     BottomNavigationView bottomNavigationView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_session_home);
+        setContentView(R.layout.activity_mates_join_home);
         mAuth = FirebaseAuth.getInstance();
+        sessionCode = findViewById(R.id.sessionJoinCode);
         currentUser = mAuth.getCurrentUser().getUid();
+        recyclerView = findViewById(R.id.RecyclerJoinMates);
         userdb = FirebaseDatabase.getInstance().getReference("MatesSession").child(currentUser);
-        text = userdb.toString();
-        Log.i(TAG, "onCreate: " + userCode);
-        shareButton = findViewById(R.id.shareButton);
-        sessionCode = findViewById(R.id.sessionCode);
-        recyclerView = findViewById(R.id.RecyclerMates);
         userdb.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -68,10 +57,7 @@ public class CreateSessionHome extends AppCompatActivity {
 
             }
         });
-
-        getSongs();
-
-        bottomNavigationView = findViewById(R.id.createMatesbottom_nav);
+        bottomNavigationView = findViewById(R.id.matesJoinbottom_nav);
 
         bottomNavigationView.setSelectedItemId(R.id.mates);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -103,10 +89,19 @@ public class CreateSessionHome extends AppCompatActivity {
             }
         });
 
+        clientSong();
+
     }
-    //The userdb contains the code for the session under the currentUser id, however the application cannot access the code straight therefore the app gets the code from the MatesSession
-    //If the data exists then, this the application uses the code value to find the songs in the MatesSessionID document
-    private void getSongs() {
+
+    public void newSearch(View view){
+        Intent myIntent = new Intent(this, Mates_Search.class);
+        startActivity(myIntent);
+        finish();
+    }
+
+    private static final String TAG = "MatesJoinHome";
+
+    public void clientSong(){
         final DatabaseReference[] db = new DatabaseReference[1];
         userdb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -118,9 +113,9 @@ public class CreateSessionHome extends AppCompatActivity {
                     FirebaseRecyclerOptions<Music> options= new FirebaseRecyclerOptions.Builder<Music>()
                             .setQuery(db[0], Music.class)
                             .build();
-                    adapter = new MatesMusicAdapter(options);
-                    recyclerView.setAdapter(adapter);
-                    adapter.startListening();
+                    clientAdapter = new matesClientAdapter(options);
+                    recyclerView.setAdapter(clientAdapter);
+                    clientAdapter.startListening();
                 }
             }
 
@@ -131,28 +126,18 @@ public class CreateSessionHome extends AppCompatActivity {
         });
     }
 
-    private static final String TAG="CreateSessionHome";
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-//Allows the user to send the sessionCode
     public void shareHandler(View view){
         String code = sessionCode.getText().toString();
 
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_TEXT, code);
-        startActivity(shareIntent.createChooser(shareIntent,"Share"));
+        startActivity(shareIntent.createChooser(shareIntent,"Share Code"));
     }
 
-    public void newSearch(View view){
-        Intent myIntent = new Intent(this, Mates_Search.class);
-        startActivity(myIntent);
-        finish();
+    @Override
+    protected void onStop() {
+        super.onStop();
+        clientAdapter.stopListening();
     }
-
 }

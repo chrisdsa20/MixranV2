@@ -1,6 +1,7 @@
 package com.example.mishranv3;
 
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +33,8 @@ public class PartyAddAdapter extends FirebaseRecyclerAdapter<Music, PartyAddAdap
     String currentUser = mAuth.getCurrentUser().getUid();
     DatabaseReference userdb = FirebaseDatabase.getInstance().getReference("PartySession").child(currentUser);
     DatabaseReference db;
+    MediaPlayer mediaPlayer;
+    private boolean flag = true;
     public PartyAddAdapter(@NonNull FirebaseRecyclerOptions<Music> options) {
         super(options);
         userdb.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -52,8 +55,7 @@ public class PartyAddAdapter extends FirebaseRecyclerAdapter<Music, PartyAddAdap
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull AddViewHolder holder, int position, @NonNull final Music model) {
-        final MediaPlayer mediaPlayer = new MediaPlayer();
+    protected void onBindViewHolder(@NonNull final AddViewHolder holder, int position, @NonNull final Music model) {
         holder.Name.setText(model.getName());
         holder.Artist.setText(model.getArtist());
         holder.Duration.setText(model.getDuration());
@@ -61,39 +63,36 @@ public class PartyAddAdapter extends FirebaseRecyclerAdapter<Music, PartyAddAdap
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-                MediaPlayer mediaPlayer = new MediaPlayer();
-                try {
-                    mediaPlayer.setDataSource(model.getSong());
-                    mediaPlayer.prepare();
-                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mp) {
-                            Log.e(TAG, "onPrepared: Buffering ");
-                        }
-
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if(!mediaPlayer.isPlaying()){
-                    mediaPlayer.start();
-                    Log.i(TAG, "onClick: Music Playing");
+                String song = model.getSong();
+                Uri newSong = Uri.parse(song);
+                if(flag){
+                    mediaPlayer = MediaPlayer.create(v.getContext(),newSong);
+                    mediaPlayer.release();
+                    flag = false;
+                    Toast.makeText(v.getContext(), "Buffering....", Toast.LENGTH_SHORT).show();
+                }if(mediaPlayer.isPlaying()){
+                    mediaPlayer.pause();
+                    holder.playButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
                 }
                 else{
-                    mediaPlayer.pause();
-                    Log.i(TAG, "onClick: Music Paused");
+                    mediaPlayer.start();
+                    Toast.makeText(v.getContext(), "Song is playing", Toast.LENGTH_SHORT).show();
+                    holder.playButton.setImageResource(R.drawable.ic_pause_black_24dp);
                 }
             }
         });
-        holder.pauseButton.setOnClickListener(new View.OnClickListener() {
+        holder.stopButton.setOnClickListener(new View.OnClickListener(){
+
             @Override
             public void onClick(View v) {
-                if(mediaPlayer.isPlaying()){
-                    mediaPlayer.pause();
+                if(!flag){
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    flag = true;
+                    holder.playButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
                 }
             }
         });
-
         holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,9 +105,6 @@ public class PartyAddAdapter extends FirebaseRecyclerAdapter<Music, PartyAddAdap
                 Music music = new Music(artist,duration,genre,name,song);
                 db.child(name).setValue(music);
                 Toast.makeText(v.getContext(), "Song added to playlist", Toast.LENGTH_SHORT).show();
-
-
-
             }
         });
 
@@ -124,15 +120,15 @@ public class PartyAddAdapter extends FirebaseRecyclerAdapter<Music, PartyAddAdap
     public class AddViewHolder extends RecyclerView.ViewHolder {
         TextView Name,Artist,Duration;
         ConstraintLayout constraintLayout;
-        ImageView playButton, pauseButton, add;
+        ImageView playButton, stopButton, add;
         public AddViewHolder(@NonNull View itemView) {
             super(itemView);
-            Name = itemView.findViewById(R.id.songName);
+            Name = itemView.findViewById(R.id.clientsongName);
             Artist = itemView.findViewById(R.id.artistName);
             Duration = itemView.findViewById(R.id.duration);
             constraintLayout = itemView.findViewById(R.id.constraintlayout);
             playButton = itemView.findViewById(R.id.play);
-            pauseButton = itemView.findViewById(R.id.pause);
+            stopButton = itemView.findViewById(R.id.stop);
             add = itemView.findViewById(R.id.add);
         }
     }

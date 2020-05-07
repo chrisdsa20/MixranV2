@@ -40,8 +40,8 @@ public class Solo extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch(item.getItemId()){
-                    case R.id.search:
-                        startActivity(new Intent(getApplicationContext(), Search.class));
+                    case R.id.home:
+                        startActivity(new Intent(getApplicationContext(), userHome.class));
                         overridePendingTransition(0,0);
                         return true;
                     case R.id.party:

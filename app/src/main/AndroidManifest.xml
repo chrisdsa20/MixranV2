@@ -11,10 +11,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PartySearch"></activity>
+        <activity android:name=".PartyJoinHome"></activity>
+        <activity android:name=".userHome" />
+        <activity android:name=".MatesJoinHome" />
+        <activity android:name=".PartySearch" />
         <activity android:name=".CreatePartyHome" />
         <activity android:name=".Mates_Search" />
-        <activity android:name=".Search" />
         <activity android:name=".solo_search" />
         <activity android:name=".CreateSessionHome" />
         <activity android:name=".MatesCreateSession">

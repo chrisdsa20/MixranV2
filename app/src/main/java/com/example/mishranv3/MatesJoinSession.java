@@ -32,13 +32,11 @@ public class MatesJoinSession extends AppCompatActivity {
 
     private static final String TAG="MatesJoinSession";
     EditText input;
-    Button submit;
-    MatesMusicAdapter adapter;
-    DatabaseReference db, db2, database, newdb;
+    DatabaseReference db, db2,newdb;
     BottomNavigationView bottomNavigationView;
     FirebaseAuth mAuth;
     String currentUser;
-    RecyclerView recyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,20 +44,49 @@ public class MatesJoinSession extends AppCompatActivity {
         setContentView(R.layout.activity_mates_join_session);
 
         input = findViewById(R.id.sessionInput);
-        String code = input.getText().toString();
-        submit = findViewById(R.id.submitCode);
         db = FirebaseDatabase.getInstance().getReference("MatesSession");
         db2 = FirebaseDatabase.getInstance().getReference().child("MatesSessionID");
         newdb = FirebaseDatabase.getInstance().getReference().child("Music");
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser().getUid();
         bottomNavigationView = findViewById(R.id.joinSession_nav);
-        recyclerView = findViewById(R.id.joinAdapter);
+
+        bottomNavigationView.setSelectedItemId(R.id.mates);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.home:
+                        startActivity(new Intent(getApplicationContext(), userHome.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                    case R.id.party:
+                        startActivity(new Intent(getApplicationContext(), Party.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                    case R.id.solo:
+                        startActivity(new Intent(getApplicationContext(), Solo.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+                    case R.id.mates:
+                        return true;
+                    case R.id.profile:
+                        startActivity(new Intent(getApplicationContext(), userProfile.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                }
+
+                return false;
+            }
+        });
+
 
     }
     public void onClickHandler(final View view){
         final String code = input.getText().toString();
-
+        final String permission = "false";
+//Check if the code entered by the user is equal to anything in the MatesSessionID document on the database
         db2.orderByChild("id").equalTo(code).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -67,16 +94,13 @@ public class MatesJoinSession extends AppCompatActivity {
                     //Inform user that the data has been
                     Toast.makeText(MatesJoinSession.this, "Data Found", Toast.LENGTH_SHORT).show();
                     String currentUser = mAuth.getCurrentUser().getUid();
-                    MatesSessions matesSessions = new MatesSessions(code);
+                    //Permission is set to false, and the code and permission are added to the MatesSession document on the database
+                    MatesSessions matesSessions = new MatesSessions(code,permission);
                     db.child(currentUser).setValue(matesSessions);
                     newSearch();
-
-
-
-
-
                 }
                 else{
+                    //If this value does not exist then an error message is thrown
                     Toast.makeText(MatesJoinSession.this, "Error", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -93,12 +117,8 @@ public class MatesJoinSession extends AppCompatActivity {
 
     }
 
-    public void searchHandler(View view){
-        Intent searchIntent = new Intent(this, solo_search.class);
-        startActivity(searchIntent);
-    }
     private void newSearch(){
-        Intent myIntent = new Intent(this, CreateSessionHome.class);
+        Intent myIntent = new Intent(this, MatesJoinHome.class);
         startActivity(myIntent);
     }
 }

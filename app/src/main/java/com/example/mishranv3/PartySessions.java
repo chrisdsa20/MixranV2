@@ -1,38 +1,13 @@
 package com.example.mishranv3;
 
 public class PartySessions {
-    String name, description, id, date, permission;
+    String id, permission;
 
-    public PartySessions(String name, String description, String id, String date, String permission) {
-        this.name = name;
-        this.description = description;
+    public PartySessions(String id, String permission) {
         this.id = id;
-        this.date = date;
+        this.permission = permission;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
 
     public String getId() {
         return id;
